@@ -27,7 +27,7 @@ namespace BudgetManagementService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<DbConfiguration>(Configuration);
+            services.Configure<BudgetManagementConfiguration>(Configuration);
 
             //services.AddDbContext<DbContext>(opt => opt.UseInMemoryDatabase());
 
@@ -44,10 +44,17 @@ namespace BudgetManagementService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            app.UseMvc(routes =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Hello World!");
+            //});
         }
     }
 }

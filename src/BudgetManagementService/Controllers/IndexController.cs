@@ -11,16 +11,28 @@ using System.Threading.Tasks;
 
 namespace BudgetManagementService.Controllers
 {
-    public class IndexController : Controller
+    public class HomeController : Controller
     {
+        private IRepository _repository;
 
+        public HomeController(IOptions<BudgetManagementConfiguration> config, IRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public string Index()
+        {
+            var repository = new Repository();
+
+            return "Hello World!";
+        }
     }
 
     public class DbContext
     {
         public IMongoCollection<Budget> BudgetCollection;
 
-        public DbContext(IOptions<DbConfiguration> config)
+        public DbContext(IOptions<BudgetManagementConfiguration> config)
         {
             var connectionString = config.Value.ConnectionString;
             var client = new MongoClient(connectionString);
@@ -30,7 +42,12 @@ namespace BudgetManagementService.Controllers
         }
     }
 
-    public class Repository
+    public interface IRepository
+    {
+        Task<IEnumerable<Budget>> GetAll();
+    }
+
+    public class Repository : IRepository
     {
         private DbContext _context;
 
@@ -39,10 +56,9 @@ namespace BudgetManagementService.Controllers
             _context = context;
         }
 
-        public async Task<IEnumerable<Budget>> IEnumerable<Budget> GetAll()
+        public async Task<IEnumerable<Budget>> GetAll()
         {           
-            return await _context.BudgetCollection.Find(new BsonDocument()).ToListAsync();
-            
+            return await _context.BudgetCollection.Find(new BsonDocument()).ToListAsync();  
         }
     }
 
