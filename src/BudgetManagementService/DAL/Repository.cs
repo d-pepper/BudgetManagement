@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BudgetManagementService.Models;
 
 namespace BudgetManagementService.DAL
 {
@@ -16,7 +17,7 @@ namespace BudgetManagementService.DAL
 
         public async Task<IEnumerable<Budget>> GetAll()
         {
-            return await _context.BudgetCollection.Find(new BsonDocument()).ToListAsync();
+            return await _context.BudgetCollection.Find<Budget>().ToListAsync();
         }
     }
 }
