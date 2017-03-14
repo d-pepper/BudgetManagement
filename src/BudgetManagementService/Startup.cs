@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using BudgetManagementService.Configuration;
+using BudgetManagementService.DAL;
 
 namespace BudgetManagementService
 {
@@ -29,7 +30,7 @@ namespace BudgetManagementService
         {
             services.Configure<BudgetManagementConfiguration>(Configuration);
 
-            //services.AddDbContext<DbContext>(opt => opt.UseInMemoryDatabase());
+            //services.AddDbContext<ApplicationDbContext>(opt => opt.UseInMemoryDatabase());
 
             services.AddMvc();
         }
