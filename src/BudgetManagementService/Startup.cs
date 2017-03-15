@@ -29,10 +29,11 @@ namespace BudgetManagementService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<BudgetManagementConfiguration>(Configuration);
-
-            //services.AddDbContext<ApplicationDbContext>(opt => opt.UseInMemoryDatabase());
-
+      
             services.AddMvc();
+
+            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
+            services.AddTransient<IRepository, Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
