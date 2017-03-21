@@ -28,12 +28,13 @@ namespace BudgetManagementService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BudgetManagementConfiguration>(Configuration);
-      
             services.AddMvc();
+            services.AddOptions();
+
+            services.Configure<AppConfiguration>(Configuration);   
 
             services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
-            services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IRepository, BudgetRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,11 +53,6 @@ namespace BudgetManagementService
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            //app.Run(async (context) =>
-            //{
-            //    await context.Response.WriteAsync("Hello World!");
-            //});
         }
     }
 }

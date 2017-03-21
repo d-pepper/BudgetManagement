@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BudgetManagementService.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace BudgetManagementService.DAL
 {
-    public class Repository : IRepository
+    public class BudgetRepository : IRepository
     {
         private IApplicationDbContext _context;
 
-        public Repository(IApplicationDbContext context)
+        public BudgetRepository(IApplicationDbContext context)
         {
             _context = context;
         }
 
+        public void Add(Budget budget)
+        {
+            _context.BudgetCollection.InsertOneAsync(budget);
+        }
+
         public async Task<IEnumerable<Budget>> GetAll()
         {
-            return await _context.Collection.FindAsync<Budget>(new BsonDocument()).Result.ToListAsync();
+            var collection = _context.BudgetCollection;
+            var results = await collection.Find(new BsonDocument()).ToListAsync();
+
+            return results;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace BudgetManagementService.DAL
 {
     public interface IRepository
     {
+        void Add(Budget budget);
         Task<IEnumerable<Budget>> GetAll();
     }
 }

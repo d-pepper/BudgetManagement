@@ -1,22 +1,21 @@
 ﻿using MongoDB.Driver;
-using BudgetManagementService.Models;
 using BudgetManagementService.Configuration;
 using Microsoft.Extensions.Options;
-using System;
+using BudgetManagementService.Models;
 
 namespace BudgetManagementService.DAL
 {
     public class ApplicationDbContext : IApplicationDbContext
     {
-        public IMongoCollection<Budget> Collection { get; set; }
+        public IMongoCollection<Budget> BudgetCollection { get; set; }
 
-        public ApplicationDbContext(IOptions<BudgetManagementConfiguration> config)
+        public ApplicationDbContext(IOptions<AppConfiguration> config)
         {
             var connectionString = config.Value.ConnectionString;
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase(config.Value.DbName);
-
-            Collection = database.GetCollection<Budget>("Budgets");
+            
+            BudgetCollection = database.GetCollection<Budget>("budgets");
         }
     }
 }
