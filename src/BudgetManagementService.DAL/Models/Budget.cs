@@ -7,7 +7,7 @@ namespace BudgetManagementService.Models
     {
         public  ObjectId Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Dictionary<string, double>> Incomings;
-        public ICollection<Dictionary<string, double>> Outgoings;
+        public IEnumerable<Dictionary<string, double>> Incomings;
+        public IEnumerable<Dictionary<string, double>> Outgoings;
     }
 }

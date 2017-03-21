@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using BudgetManagementService.Configuration;
-using System.Collections.Generic;
-using MongoDB.Driver;
-using Microsoft.Extensions.Options;
-using BudgetManagementService.Configuration;
 using BudgetManagementService.DAL;
 
 namespace BudgetManagementService
@@ -31,7 +25,7 @@ namespace BudgetManagementService
             services.AddMvc();
             services.AddOptions();
 
-            services.Configure<AppConfiguration>(Configuration);   
+            services.Configure<DbConfiguration>(Configuration);   
 
             services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
             services.AddTransient<IRepository, BudgetRepository>();

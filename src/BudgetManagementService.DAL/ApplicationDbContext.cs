@@ -1,7 +1,6 @@
 ﻿using MongoDB.Driver;
-using BudgetManagementService.Configuration;
-using Microsoft.Extensions.Options;
 using BudgetManagementService.Models;
+using Microsoft.Extensions.Options;
 
 namespace BudgetManagementService.DAL
 {
@@ -9,7 +8,7 @@ namespace BudgetManagementService.DAL
     {
         public IMongoCollection<Budget> BudgetCollection { get; set; }
 
-        public ApplicationDbContext(IOptions<AppConfiguration> config)
+        public ApplicationDbContext(IOptions<DbConfiguration> config)
         {
             var connectionString = config.Value.ConnectionString;
             var client = new MongoClient(connectionString);

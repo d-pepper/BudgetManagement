@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BudgetManagementService.DAL;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using BudgetManagementService.DAL;
+using System.Linq;
+using BudgetManagementService.Models;
 
 namespace BudgetManagementService.Controllers
 {
@@ -20,19 +23,51 @@ namespace BudgetManagementService.Controllers
 
         [HttpGet]
         [Route("budgets")]
-        public async Task<IActionResult> Budgets()
+        public async Task<IActionResult> GetBudgets()
         {
             var budgets = await _repository.GetAll();
-            return new OkObjectResult(budgets);
+
+            //Move to mapper/service
+            var response = budgets.Select(x => new BudgetViewModel {
+                Name = x.Name,
+                Incomings = x.Incomings,
+                Outgoings = x.Outgoings
+            });
+
+            return new OkObjectResult(response);
         }
 
-        public IActionResult PostBudget(BudgetRequest budget)
+        [HttpPost]
+        [Route("budgets")]
+        public IActionResult PostBudget(BudgetViewModel budget)
         {
-            //Map request to dto
+            if(budget == null)
+            {
+                return new BadRequestResult();
+            }
 
-            //_repository.Add(budget);
+            //Map request to dto
+            var model = new Budget()
+            {
+                Name = budget.Name,
+                Outgoings = budget.Outgoings,
+                Incomings = budget.Incomings
+            };
+
+
+            _repository.Add(model);
 
             return new OkResult();
         }
     }
+
+    public class BudgetViewModel
+    {
+        public string Name { get; set; }
+        public IEnumerable<Dictionary<string, double>> Incomings { get; set; }
+        public IEnumerable<Dictionary<string, double>> Outgoings { get; set; }
+    }
 }
+
+
+
