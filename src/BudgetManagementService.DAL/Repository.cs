@@ -21,12 +21,22 @@ namespace BudgetManagementService.DAL
             _context.BudgetCollection.InsertOneAsync(budget);
         }
 
+        public async Task<Budget> Find(string id)
+        {
+            return await _context.BudgetCollection.FindAsync(x => x.Id == ObjectId.Parse(id));
+        }
+
         public async Task<IEnumerable<Budget>> GetAll()
         {
             var collection = _context.BudgetCollection;
             var results = await collection.Find(new BsonDocument()).ToListAsync();
 
             return results;
+        }
+
+        public void Update(Budget budget)
+        {
+            throw new NotImplementedException();
         }
     }
 }

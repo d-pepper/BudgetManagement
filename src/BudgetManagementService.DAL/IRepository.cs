@@ -7,8 +7,10 @@ using BudgetManagementService.Models;
 namespace BudgetManagementService.DAL
 {
     public interface IRepository
-    {
-        void Add(Budget budget);
+    {        
         Task<IEnumerable<Budget>> GetAll();
+        void Add(Budget budget);
+        void Update(Budget budget);
+        Task<Budget> Find(string id);
     }
 }

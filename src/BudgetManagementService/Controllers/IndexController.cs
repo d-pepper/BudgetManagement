@@ -23,23 +23,36 @@ namespace BudgetManagementService.Controllers
 
         [HttpGet]
         [Route("budgets")]
-        public async Task<IActionResult> GetBudgets()
+        public async Task<IActionResult> GetAll()
         {
             var budgets = await _repository.GetAll();
 
             //Move to mapper/service
             var response = budgets.Select(x => new BudgetViewModel {
+                Id = x.Id.ToString(),
                 Name = x.Name,
                 Incomings = x.Incomings,
                 Outgoings = x.Outgoings
             });
 
-            return new OkObjectResult(response);
+            return new ObjectResult(response);
         }
 
-        [HttpPost]
-        [Route("budgets")]
-        public IActionResult PostBudget(BudgetViewModel budget)
+        [HttpGet("budgets/{id}", Name = "GetBudget")]
+        public IActionResult GetById(string id)
+        {
+            var item = _repository.Find(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(item);
+        }
+
+        [HttpPost("budgets")]
+        public IActionResult CreateNewBudget([FromBody] BudgetViewModel budget)
         {
             if(budget == null)
             {
@@ -54,15 +67,17 @@ namespace BudgetManagementService.Controllers
                 Incomings = budget.Incomings
             };
 
-
             _repository.Add(model);
 
-            return new OkResult();
+            //Return created object to determine success. Find a nicer way to do this
+            //return new OkObjectResult(model);
+            return CreatedAtRoute("GetBudget", new { id = model.Id }, model);
         }
     }
 
     public class BudgetViewModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public IEnumerable<Dictionary<string, double>> Incomings { get; set; }
         public IEnumerable<Dictionary<string, double>> Outgoings { get; set; }
