@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using BudgetManagementService.DAL;
 using System.Linq;
 using BudgetManagementService.Models;
+using BudgetManagementService.ViewModels;
 
 namespace BudgetManagementService.Controllers
 {
+    //Add shared path
     public class HomeController : Controller
     {
         private IRepository _repository;
@@ -39,16 +40,24 @@ namespace BudgetManagementService.Controllers
         }
 
         [HttpGet("budgets/{id}", Name = "GetBudget")]
-        public IActionResult GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var item = _repository.Find(id);
+            var budget = await _repository.Find(id);
 
-            if (item == null)
+            if (budget == null)
             {
                 return NotFound();
             }
 
-            return new ObjectResult(item);
+            //Move to mapper/service
+            var response = new BudgetViewModel();
+            response.Id = budget.Id.ToString();
+            response.Name = budget.Name;
+            response.Incomings = budget.Incomings;
+            response.Outgoings = budget.Outgoings;
+
+
+            return new ObjectResult(response);
         }
 
         [HttpPost("budgets")]
@@ -69,18 +78,31 @@ namespace BudgetManagementService.Controllers
 
             _repository.Add(model);
 
-            //Return created object to determine success. Find a nicer way to do this
-            //return new OkObjectResult(model);
             return CreatedAtRoute("GetBudget", new { id = model.Id }, model);
         }
-    }
 
-    public class BudgetViewModel
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public IEnumerable<Dictionary<string, double>> Incomings { get; set; }
-        public IEnumerable<Dictionary<string, double>> Outgoings { get; set; }
+        [HttpPut("budgets/{id}")]
+        public async  Task<IActionResult> Update(string id, [FromBody] BudgetViewModel item)
+        {
+            if (item == null)
+            {
+                return BadRequest();
+            }
+
+            var budget = await _repository.Find(id);
+            if (budget == null)
+            {
+                return NotFound();
+            }
+
+            budget.Name = item.Name;
+            budget.Incomings = item.Incomings;
+            budget.Outgoings = item.Outgoings;
+
+            _repository.Update(budget);
+
+            return new NoContentResult();
+        }
     }
 }
 
